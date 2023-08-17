@@ -20,7 +20,7 @@
     </header>
     <form id="item-form">
       <div class="form-control">
-        <input type="text" class="form-input" id="item-input" name="item" placeholder="Enter Item" />
+        <input type="text" class="form-input" id="item-input" name="item" placeholder="Enter Item" autocomplete="off" />
       </div>
       <div class="form-control">
         <button type="submit" class="btn">
@@ -33,31 +33,15 @@
       <input type="text" class="form-input-filter" id="filter" placeholder="Filter Items" />
     </div>
 
-    <ul id="item-list" class="items">
-      <li>
+    <div id="filterNoResults">No items found</div>
+
+    <ul id="list-item" class="items">
+      <!-- <li>
         Apples
         <button class="remove-item btn-link text-red">
           <i class="fa-solid fa-xmark"></i>
         </button>
-      </li>
-      <li>
-        Orange Juice
-        <button class="remove-item btn-link text-red">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </li>
-      <li>
-        Oreos
-        <button class="remove-item btn-link text-red">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </li>
-      <li>
-        Milk
-        <button class="remove-item btn-link text-red">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </li>
+      </li> -->
     </ul>
 
     <button id="clear" class="btn-clear">Clear All</button>
