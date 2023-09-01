@@ -9,12 +9,17 @@
 }
 
 body {
+  display: grid;
+  grid-template-rows: 1fr 60px;
   font-family: 'Poppins', sans-serif;
   font-size: 16px;
   line-height: 1.5;
+  width: 100%;
+  min-height: 100vh;
   color: #333;
   background-color: #fefefe;
-  padding: 25px;
+  padding: 30px;
+  padding-bottom: 0;
 }
 
 /* Remove item modal */
@@ -26,7 +31,7 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   background-color: #00000084;
   padding: 0 20px;
 }
@@ -64,7 +69,16 @@ body {
   background-color: #ff3561bf;
 }
 
-
+/* Content  */
+.container {
+  box-shadow: 0 0 20px #aeaeae;
+  max-width: 800px;
+  width: 100%;
+  height: max-content;
+  margin: 0 auto;
+  padding: 35px;
+  border-radius: 20px;
+}
 
 header {
   display: flex;
@@ -77,15 +91,6 @@ header h1 {
   font-size: clamp(1.2rem, 5vw, 2.2rem);
   font-weight: 300;
   margin-left: 10px;
-}
-
-.container {
-  box-shadow: 0 0 20px #aeaeae;
-  max-width: 800px;
-  width: 100%;
-  margin: auto;
-  padding: 35px;
-  border-radius: 20px;
 }
 
 /* Form & Input */
@@ -325,10 +330,14 @@ header h1 {
 
 /* Copyright */
 .copyright {
-  font-size: clamp(9px, 3vw, 14px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(8px, 2.5vw, 12px);
   color: #3337;
   text-align: center;
-  margin-top: 25px;
+  height: 100%;
+  width: 100%;
 }
 
 @media screen and (max-width: 425px) {
