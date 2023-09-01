@@ -13,8 +13,58 @@ body {
   font-size: 16px;
   line-height: 1.5;
   color: #333;
-  background-color: #f5f5f5;
+  background-color: #fefefe;
+  padding: 25px;
 }
+
+/* Remove item modal */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-color: #00000084;
+  padding: 0 20px;
+}
+
+.modal-content {
+  text-align: center;
+  background-color: #ffffff;
+  max-width: 450px;
+  padding: 30px;
+  border-radius: 18px;
+}
+
+.modal-content h2 {
+  font-size: clamp(15px, 4vw, 20px);
+  color: #4e4e4e;
+  margin-bottom: 25px;
+  font-weight: 600;
+}
+
+.modal-content button {
+  font-size: clamp(12px, 4vw, 18px);
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: .5em 1.5em;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+.remove-btn-confirm {
+  background-color: #00c09cbf;
+}
+
+.remove-btn-cancel {
+  background-color: #ff3561bf;
+}
+
+
 
 header {
   display: flex;
@@ -24,32 +74,82 @@ header {
 }
 
 header h1 {
+  font-size: clamp(1.2rem, 5vw, 2.2rem);
   font-weight: 300;
   margin-left: 10px;
 }
 
 .container {
+  box-shadow: 0 0 20px #aeaeae;
   max-width: 800px;
-  margin: 30px auto;
-  padding: 20px;
+  width: 100%;
+  margin: auto;
+  padding: 35px;
+  border-radius: 20px;
 }
 
 /* Form & Input */
 .form-input {
   width: 100%;
-  font-size: 18px;
+  font-size: clamp(15px, 3vw, 18px);
   margin-bottom: 20px;
-  padding: 10px;
+  padding: .6em;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 25px;
   outline: none;
 }
 
-.form-input-filter {
-  margin-top: 20px;
-  width: 100%;
-  font-size: 18px;
+/* Input labels */
+.input-label {
+  display: block;
+  font-size: clamp(9px, 3vw, 14px);
+  font-weight: 400;
+}
+
+.item-advice {
+  color: #6e6e6e;
+  margin-bottom: 10px;
+}
+
+.item-doubled {
+  display: none;
+}
+
+.insert-item {
+  display: none;
+}
+
+.shown {
+  display: block;
+  margin-top: -10px;
   margin-bottom: 20px;
+  color: #ff3561b2;
+  animation: fall .5s forwards ease-in-out;
+}
+
+@keyframes fall {
+  0% {
+    transform: translate(-30px, -100%) rotate(-2deg);
+  }
+
+  50% {
+    transform: translate(0, 0) rotate(0);
+  }
+
+  60% {
+    transform: rotate(1deg);
+  }
+
+  80% {
+    transform: rotate(1.5deg);
+  }
+}
+
+/* Filter */
+.form-input-filter {
+  margin: 25px 0;
+  width: 100%;
+  font-size: clamp(15px, 3vw, 18px);
   padding: 10px;
   border: none;
   border-bottom: 1px solid #ccc;
@@ -61,51 +161,25 @@ header h1 {
   display: none;
   margin: 20px auto;
   text-align: center;
-  font-size: 1.3rem;
+  font-size: clamp(15px, 3vw, 18px);
   font-weight: 300;
   color: #9e9e9e;
 }
 
-/* Buttons */
-.btn {
-  background-color: #333;
+/* Add button */
+.addBtn {
+  font-size: clamp(12px, 2vw, 15px);
+  background-color: #7D83FF;
   color: #fff;
   border: none;
-  border-radius: 5px;
+  border-radius: 22px;
   padding: 10px 20px;
   cursor: pointer;
+  transition: box-shadow .3s ease;
 }
 
-.btn:hover {
-  background-color: #444;
-}
-
-.btn-link {
-  font-size: 16px;
-  background-color: transparent;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-}
-
-.btn-clear {
-  margin-top: 20px;
-  width: 100%;
-  font-size: 16px;
-  background-color: transparent;
-  color: #333;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.btn-clear:hover {
-  background-color: #f1f1f1;
-}
-
-.text-red {
-  color: red;
+.addBtn:hover {
+  box-shadow: inset -6px -6px 20px #656bd3;
 }
 
 /* Items */
@@ -114,21 +188,171 @@ header h1 {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  margin-top: 10px;
 }
 
 .items li {
-  display: flex;
-  justify-content: space-between;
-  width: 48%;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px 15px;
-  margin-bottom: 20px;
-  font-weight: 700;
+  list-style: none;
+  width: 100%;
 }
 
-@media (max-width: 500px) {
+.item-display {
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 0 0 10px #9e9e9e;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  height: auto;
+}
+
+.item-display textarea {
+  cursor: default;
+  resize: none;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(12px, 5vw, 15px);
+  color: #7e7e7e;
+  height: 3em;
+  width: 100%;
+  min-width: 100px;
+  padding: 10px 10px 0;
+  border: none;
+  border-radius: 15px;
+  word-wrap: normal;
+}
+
+.item-display textarea:focus {
+  outline: none;
+}
+
+.item-controls {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border-radius: 15px;
+  padding: 0 4px;
+  margin: 1px;
+}
+
+.item-controls .item-btn {
+  width: 30px;
+  height: 30px;
+  font-size: clamp(12px, 3vw, 14px);
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #00ffd0;
+  cursor: pointer;
+  margin: 0 3px;
+  transition: all .3s ease;
+}
+
+.item-controls .item-btn:hover {
+  background-color: #00dac8;
+  color: #ffffff;
+}
+
+.items li i {
+  pointer-events: none;
+}
+
+/* Edit controls */
+.edit-controls {
+  cursor: default;
+  display: none;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+.edit-controls .item-btn {
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  font-size: 15px;
+  border: none;
+  background-color: transparent;
+  margin: 0 8px;
+}
+
+.edit-controls .item-btn:hover {
+  animation: shake .6s linear;
+}
+
+@keyframes shake {
+  0% {
+    transform: rotateZ(0deg);
+  }
+
+  35% {
+    transform: rotateZ(30deg);
+  }
+
+  65% {
+    transform: rotateZ(-30deg);
+  }
+
+  100% {
+    transform: rotateZ(0deg);
+  }
+}
+
+.save-btn {
+  color: #23CE6B;
+}
+
+.cancel-btn {
+  color: #FF3562;
+}
+
+/* Clear button */
+.btn-clear {
+  margin: 20px auto 0;
+  font-size: 15px;
+  background-color: #007FFF;
+  color: #ffffff;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 0;
+  width: 35%;
+  min-width: 120px;
+  cursor: pointer;
+  transition: box-shadow .3s ease;
+}
+
+.btn-clear:hover {
+  box-shadow: inset -6px -6px 20px #0066cd;
+}
+
+/* Copyright */
+.copyright {
+  font-size: clamp(9px, 3vw, 14px);
+  color: #3337;
+  text-align: center;
+  margin-top: 25px;
+}
+
+@media screen and (max-width: 425px) {
+  .modal-container {
+    padding: 10px;
+  }
+
+  .item-display textarea {
+    height: 2.5em;
+    padding-top: .5em;
+  }
+
+  .item-controls .item-btn {
+    width: 22px;
+    height: 22px;
+    color: #00ffd0;
+    margin: 0 3px;
+  }
+
+}
+
+@media screen and (min-width: 640px) {
   .items li {
-    width: 100%;
+    list-style: none;
+    width: 48%;
   }
 }

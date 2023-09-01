@@ -1,68 +1,44 @@
 const itemForm = document.getElementById('item-form');
 const itemInput = document.getElementById('item-input');
-const ulList = document.getElementById('list-item');
+const ulList = document.getElementById('ul-list');
 const clearBtn = document.getElementById('clear');
 const filterInput = document.getElementById('filter');
+let itemsFromStorage = getItemsFromStorage();
 
-function displayItems() {
-  const itemsFromStorage = getItemsFromStorage();
-
-  itemsFromStorage.forEach((item) => addItemToDOM(item));
-
-  resetUI();
-}
+let isEditing = true;
 
 function addItem(e) {
   e.preventDefault();
 
-  const inputValue = itemInput.value;
-
+  let inputValue = itemInput.value;
   //   Validate input
   if (inputValue === '') {
-    alert('Please insert item');
+    itemForm.querySelector('.insert-item').classList.add('shown');
     return;
+  } else {
+    inputValue = inputValue[0].toUpperCase() + inputValue.slice(1);
+    itemForm.querySelector('.insert-item').classList.remove('shown');
   }
 
-  // Display items in the DOM
-  addItemToDOM(inputValue);
+  function checkDuplicateItem(item) {
+    if (itemsFromStorage.includes(item)) {
+      itemForm.querySelector('.item-doubled').classList.add('shown');
+      return;
+    } else {
+      itemForm.querySelector('.item-doubled').classList.remove('shown');
+      // Add items to localStorage
+      addItemToStorage(inputValue);
+      displayItems();
 
-  // Add items to localStorage
-  addItemToStorage(inputValue);
-
-  resetUI();
-}
-
-// To add items in the DOM
-function addItemToDOM(item) {
-  const li = document.createElement('li');
-  li.appendChild(document.createTextNode(item));
-
-  const button = createButton('remove-item btn-link text-red');
-  li.appendChild(button);
-
-  ulList.appendChild(li);
-  itemInput.value = '';
-}
-
-function createButton(btnClasses) {
-  const button = document.createElement('button');
-  button.className = btnClasses;
-
-  function createIcon(iconClasses) {
-    const icon = document.createElement('i');
-    icon.className = iconClasses;
-
-    button.appendChild(icon);
+      resetUI();
+    }
   }
 
-  createIcon('fa-solid fa-xmark');
-  return button;
+  checkDuplicateItem(inputValue);
 }
 
 // Add items to LocalStorage
 function addItemToStorage(item) {
-  const itemsFromStorage = getItemsFromStorage();
-
   // Add new item to array
   itemsFromStorage.push(item);
 
@@ -70,64 +46,176 @@ function addItemToStorage(item) {
   localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
-function getItemsFromStorage() {
-  let itemsFromStorage;
+function displayItems() {
+  let items = '';
+  for (let i = 0; i < itemsFromStorage.length; i++) {
+    items += `
+    <li class="list-item">
+        <div class="item-display">
+          <textarea readonly maxlength="25">${itemsFromStorage[i]}</textarea>
+          <div class="item-controls">
+            <button class="item-btn edit-btn">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="item-btn remove-btn">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
 
-  if (localStorage.getItem('items') === null) {
-    itemsFromStorage = [];
-  } else {
-    itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+        <div class="edit-controls">
+          <button class="item-btn save-btn">
+            <i class="fa-solid fa-check"></i>
+          </button>
+
+          <button class="item-btn cancel-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </li>
+    `;
   }
+
+  ulList.innerHTML = items;
+
+  ulList.addEventListener('click', removeItem);
+  editItemListeners();
+  resetUI();
+}
+
+function getItemsFromStorage() {
+  let itemsFromStorage = localStorage.getItem('items')
+    ? JSON.parse(localStorage.getItem('items'))
+    : [];
 
   return itemsFromStorage;
 }
 
-// Remove item from list
-function onClickItem(e) {
-  if (e.target.parentElement.classList.contains('remove-item')) {
-    removeItem(e.target.parentElement.parentElement);
-  }
-
-  resetUI();
-}
-
 // Remove item from DOM
-function removeItem(item) {
-  if (confirm(`Are you sure you want to remove '${item.innerText}'?`)) {
-    item.remove();
-  }
+function removeItem(e) {
+  if (e.target.classList.contains('remove-btn')) {
+    const itemText = e.target
+      .closest('li')
+      .querySelector('.item-display textarea').value;
+    const rmModal = document.querySelector('.modal-container');
+    rmModal.innerHTML = `
+    <div class="modal-content">
+    <img src="./images/alert-icon.svg" alt="Exclamation circle" style="width: clamp(45px, 10vw, 80px);">
+    <h2>Are you sure yo want to remove '${itemText}'?</h2>
+    <div>
+      <button class="remove-btn-confirm">Yes</button>
+      <button class="remove-btn-cancel">Cancel</button>
+    </div>
+  </div>
+    `;
+    rmModal.style.display = 'flex';
 
-  removeItemFromStorage(item.innerText);
+    // To remove item
+    rmModal
+      .querySelector('.remove-btn-confirm')
+      .addEventListener('click', () => {
+        rmModal.style.display = 'none';
+        setTimeout(() => {
+          e.target.closest('li').remove();
+          removeItemFromStorage(itemText);
+        }, 600);
+      });
+    // To cancel
+    rmModal
+      .querySelector('.remove-btn-cancel')
+      .addEventListener('click', () => {
+        rmModal.style.display = 'none';
+      });
+  }
 }
 
-// Remove item from localStorage
+// Remove item from LocalStorage
 function removeItemFromStorage(item) {
-  let itemsFromStorage = getItemsFromStorage();
-
-  // Filter out item to be removed
   itemsFromStorage = itemsFromStorage.filter((i) => i != item);
-
-  // Convert to JSON string and set to localStorage
   localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
+// Create an event listener for each 'edit-btn'
+function editItemListeners() {
+  const editBtns = document.querySelectorAll('.edit-btn');
+
+  const itemControls = document.querySelectorAll('.item-controls');
+  const editControls = document.querySelectorAll('.edit-controls');
+  const textInput = document.querySelectorAll('.item-display textarea');
+
+  editBtns.forEach((editBtn, index) => {
+    editBtn.addEventListener('click', () => {
+      if (isEditing) {
+        itemControls[index].style.display = 'none';
+        editControls[index].style.display = 'block';
+        textInput[index].removeAttribute('readonly');
+
+        isEditing = false;
+
+        // Save button click function
+        const saveBtn = editControls[index].querySelector('.save-btn');
+
+        saveBtn.addEventListener('click', () => {
+          itemsFromStorage.splice(index, 1, textInput[index].value);
+          localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+
+          itemControls[index].style.display = 'flex';
+          editControls[index].style.display = 'none';
+          textInput[index].setAttribute('readonly', 'true');
+
+          isEditing = true;
+        });
+
+        // Cancel button click function
+        const cancelBtn = editControls[index].querySelector('.cancel-btn');
+        cancelBtn.addEventListener('click', () => {
+          displayItems();
+          isEditing = true;
+        });
+      }
+    });
+  });
+}
+
 // Clear all list items
-function clearAll(e) {
-  if (
-    confirm('Are you sure you want to remove ALL your shopping list items?')
-  ) {
-    while (ulList.firstChild) {
-      ulList.removeChild(ulList.firstChild);
-    }
+function clearAll() {
+  const rmModal = document.querySelector('.modal-container');
+  rmModal.innerHTML = `
+    <div class="modal-content">
+    <img src="./images/alert-icon.svg" alt="Exclamation circle" style="width: clamp(45px, 10vw, 80px);">
+    <h2>Are you sure yo want to <span style="color: #ff3561bf;">CLEAR ALL</span> the list?</h2>
+    <div>
+      <button class="remove-btn-confirm">Yes</button>
+      <button class="remove-btn-cancel">Cancel</button>
+    </div>
+  </div>
+    `;
+  rmModal.style.display = 'flex';
 
-    localStorage.removeItem('items');
-  }
+  // To clear list
+  rmModal.querySelector('.remove-btn-confirm').addEventListener('click', () => {
+    rmModal.style.display = 'none';
 
-  resetUI();
+    setTimeout(() => {
+      while (ulList.firstChild) {
+        ulList.removeChild(ulList.firstChild);
+      }
+
+      localStorage.removeItem('items');
+      itemsFromStorage = getItemsFromStorage();
+    }, 600);
+    resetUI();
+  });
+  // To cancel
+  rmModal.querySelector('.remove-btn-cancel').addEventListener('click', () => {
+    rmModal.style.display = 'none';
+  });
 }
 
 function resetUI() {
   const listItems = ulList.querySelectorAll('li');
+  itemInput.value = '';
+
   if (listItems.length === 0) {
     filterInput.parentElement.style.display = 'none';
     clearBtn.style.display = 'none';
@@ -147,7 +235,9 @@ function filterItems(e) {
   let hasResult = false;
 
   for (item of listItems) {
-    const itemName = item.innerText.toLowerCase();
+    const itemName = item
+      .querySelector('.item-display textarea')
+      .textContent.toLowerCase();
 
     if (itemName.includes(inputText)) {
       item.style.display = 'flex';
@@ -165,7 +255,6 @@ function filterItems(e) {
 function init() {
   // Event Listeners
   itemForm.addEventListener('submit', addItem);
-  ulList.addEventListener('click', onClickItem);
   clearBtn.addEventListener('click', clearAll);
   filterInput.addEventListener('input', filterItems);
   document.addEventListener('DOMContentLoaded', displayItems);
