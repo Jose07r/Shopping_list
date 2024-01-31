@@ -20,8 +20,9 @@ function addItem(e) {
     itemForm.querySelector('.insert-item').classList.remove('shown');
   }
 
-  function checkDuplicateItem(item) {
-    if (itemsFromStorage.includes(item)) {
+  // Check doubled items
+  (function () {
+    if (itemsFromStorage.includes(inputValue)) {
       itemForm.querySelector('.item-doubled').classList.add('shown');
       return;
     } else {
@@ -29,12 +30,8 @@ function addItem(e) {
       // Add items to localStorage
       addItemToStorage(inputValue);
       displayItems();
-
-      resetUI();
     }
-  }
-
-  checkDuplicateItem(inputValue);
+  })();
 }
 
 // Add items to LocalStorage
@@ -118,7 +115,7 @@ function removeItem(e) {
         setTimeout(() => {
           e.target.closest('li').remove();
           removeItemFromStorage(itemText);
-        }, 600);
+        }, 450);
       });
     // To cancel
     rmModal
@@ -168,8 +165,12 @@ function editItemListeners() {
 
         // Cancel button click function
         const cancelBtn = editControls[index].querySelector('.cancel-btn');
+
         cancelBtn.addEventListener('click', () => {
-          displayItems();
+          itemControls[index].style.display = 'flex';
+          editControls[index].style.display = 'none';
+          textInput[index].setAttribute('readonly', 'true');
+
           isEditing = true;
         });
       }
@@ -183,7 +184,7 @@ function clearAll() {
   rmModal.innerHTML = `
     <div class="modal-content">
     <img src="./images/alert-icon.svg" alt="Exclamation circle" style="width: clamp(45px, 10vw, 80px);">
-    <h2>Are you sure yo want to <span style="color: #ff3561bf;">CLEAR ALL</span> the list?</h2>
+    <h2>Are you sure you want to <span style="color: #ff3561bf;">CLEAR ALL</span> the list?</h2>
     <div>
       <button class="remove-btn-confirm">Yes</button>
       <button class="remove-btn-cancel">Cancel</button>
@@ -203,8 +204,8 @@ function clearAll() {
 
       localStorage.removeItem('items');
       itemsFromStorage = getItemsFromStorage();
-    }, 600);
-    resetUI();
+      resetUI();
+    }, 450);
   });
   // To cancel
   rmModal.querySelector('.remove-btn-cancel').addEventListener('click', () => {
@@ -229,6 +230,7 @@ function resetUI() {
 function filterItems(e) {
   const inputText = e.target.value.toLowerCase();
   const listItems = ulList.querySelectorAll('li');
+  console.log(listItems[0]);
 
   const filterNoResults = document.getElementById('filterNoResults');
   filterNoResults.style.display = 'none';

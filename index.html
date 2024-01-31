@@ -22,13 +22,13 @@
     </header>
     <form id="item-form">
       <div class="form-control">
-        <label for="item" class="input-label item-advice"><i class="fa-solid fa-circle-info"
+        <label for="item-input" class="input-label item-advice"><i class="fa-solid fa-circle-info"
             style="font-size: clamp(8px, 3vw, 12px); margin-right: 10px;"></i>Item must have less
           than 25 characters</label>
-        <input type="text" class="form-input" id="item-input" name="item" placeholder="Enter Item" maxlength="25"
+        <input type="text" class="form-input" id="item-input" name="item-input" placeholder="Enter Item" maxlength="25"
           autocomplete="off" />
-        <label for="item" class="input-label item-doubled">* Item already exists</label>
-        <label for="item" class="input-label insert-item">* Please insert item</label>
+        <label for="item-input" class="input-label item-doubled">* Item already exists</label>
+        <label for="item-input" class="input-label insert-item">* Please insert item</label>
       </div>
       <div class="form-control">
         <button type="submit" class="addBtn">
@@ -44,29 +44,6 @@
     <div id="filterNoResults">No items found</div>
 
     <ul id="ul-list" class="items">
-      <!-- <li class="list-item">
-        <div class="item-display">
-          <textarea disabled></textarea>
-          <div class="item-controls">
-            <button class="item-btn edit-btn">
-              <i class="fa-solid fa-pen-to-square"></i>
-            </button>
-            <button class="item-btn remove-btn">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="edit-controls">
-          <button class="item-btn save-btn">
-            <i class="fa-solid fa-check"></i>
-          </button> 
-
-          <button class="item-btn cancel-btn">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-        </div>
-      </li> -->
     </ul>
 
     <button id="clear" class="btn-clear">Clear All</button>
