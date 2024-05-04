@@ -20,7 +20,7 @@ function addItem(e) {
     itemForm.querySelector('.insert-item').classList.remove('shown');
   }
 
-  // Check doubled items
+  // Check repeated items
   (function () {
     if (itemsFromStorage.includes(inputValue)) {
       itemForm.querySelector('.item-doubled').classList.add('shown');
@@ -97,13 +97,13 @@ function removeItem(e) {
     const rmModal = document.querySelector('.modal-container');
     rmModal.innerHTML = `
     <div class="modal-content">
-    <img src="./images/alert-icon.svg" alt="Exclamation circle" style="width: clamp(45px, 10vw, 80px);">
-    <h2>Are you sure yo want to remove '${itemText}'?</h2>
-    <div>
-      <button class="remove-btn-confirm">Yes</button>
-      <button class="remove-btn-cancel">Cancel</button>
+      <img src="./images/alert-icon.svg" alt="Exclamation circle" style="width: clamp(45px, 10vw, 80px);">
+      <h2>Are you sure yo want to remove '${itemText}'?</h2>
+      <div>
+        <button class="remove-btn-confirm">Yes</button>
+        <button class="remove-btn-cancel">Cancel</button>
+      </div>
     </div>
-  </div>
     `;
     rmModal.style.display = 'flex';
 
@@ -183,13 +183,13 @@ function clearAll() {
   const rmModal = document.querySelector('.modal-container');
   rmModal.innerHTML = `
     <div class="modal-content">
-    <img src="./images/alert-icon.svg" alt="Exclamation circle" style="width: clamp(45px, 10vw, 80px);">
-    <h2>Are you sure you want to <span style="color: #ff3561bf;">CLEAR ALL</span> the list?</h2>
-    <div>
-      <button class="remove-btn-confirm">Yes</button>
-      <button class="remove-btn-cancel">Cancel</button>
+      <img src="./images/alert-icon.svg" alt="Exclamation circle" style="width: clamp(45px, 10vw, 80px);">
+      <h2>Are you sure you want to <span style="color: #ff3561bf;">CLEAR ALL</span> the list?</h2>
+      <div>
+        <button class="remove-btn-confirm">Yes</button>
+        <button class="remove-btn-cancel">Cancel</button>
+      </div>
     </div>
-  </div>
     `;
   rmModal.style.display = 'flex';
 
@@ -230,7 +230,6 @@ function resetUI() {
 function filterItems(e) {
   const inputText = e.target.value.toLowerCase();
   const listItems = ulList.querySelectorAll('li');
-  console.log(listItems[0]);
 
   const filterNoResults = document.getElementById('filterNoResults');
   filterNoResults.style.display = 'none';
